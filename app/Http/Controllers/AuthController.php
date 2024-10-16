@@ -10,6 +10,9 @@ class AuthController extends Controller
 {
     public function login(){
         //dd(Hash::make('123456'));
+        if(!empty(Auth::check())){
+            return redirect('panel/dashboard');
+        }
         return view('auth.login');
     }
 
@@ -20,5 +23,10 @@ class AuthController extends Controller
         }else{
             return redirect()->back()->with('error', 'Please entry correct email and password');
         }
+    }
+
+    public function logout(){
+        Auth::logout();
+        return redirect(url(''));
     }
 }
