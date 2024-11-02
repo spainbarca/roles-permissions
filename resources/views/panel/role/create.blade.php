@@ -7,7 +7,7 @@
 
     <section class="section">
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-9">
 
                 <div class="card">
                     <div class="card-body">
@@ -21,6 +21,26 @@
                                 <div class="col-sm-12">
                                     <input type="text" name="name" required class="form-control">
                                 </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="inputText" class="col-sm-12 col-form-label" style="display: block; margin-bottom: 20px"><b>Permission</b></label>
+                                @foreach ($getPermission as $value)
+                                <div class="row" style="margin-bottom: 20px">
+                                    <div class="col-md-3">
+                                        {{ $value['name'] }}
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="row">
+                                            @foreach ($value['group'] as $group)
+                                                <div class="col-md-3">
+                                                    <label><input type="checkbox" name="">{{ $group['name'] }}</label>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                @endforeach
                             </div>
                             <div class="row mb-3">
                                 <div class="col-sm-12">

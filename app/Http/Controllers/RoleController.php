@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
@@ -21,7 +22,9 @@ class RoleController extends Controller
      */
     public function create()
     {
-        return view('panel.role.create');
+        $getPermission = Permission::getRecord();
+        $data['getPermission'] =$getPermission;
+        return view('panel.role.create', $data);
     }
 
     /**
