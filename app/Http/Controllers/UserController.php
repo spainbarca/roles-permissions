@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -11,7 +14,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('panel.user.index');
+        $data['getRecord'] = User::getRecord();
+        return view('panel.user.index', $data);
     }
 
     /**
@@ -19,7 +23,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $data['getRole'] = Role::getRecord();
+        return view('panel.user.create', $data);
     }
 
     /**
@@ -27,7 +32,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'email' => 'required|email|unique:users',
+        ]);
+
+        $user = new User();
+        $user->name = trim($request->name);
+        $user->email = trim($request->email);
+        if (!empty($request->password)) {
+            $user->password = Hash::make($request->password);
+        }
+        $user->role_id = trim($request->role_id);
+        $user->save();
+
+        return redirect('panel/user')->with('success', 'User Successfully created');
     }
 
     /**
@@ -43,7 +61,9 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $data['getRecord'] = User::getSingle($id);
+        $data['getRole'] = Role::getRecord();
+        return view('panel.user.edit', $data);
     }
 
     /**
@@ -51,7 +71,15 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $user = User::getSingle($id);
+        $user->name = trim($request->name);
+        if (!empty($request->password)) {
+            $user->password = Hash::make($request->password);
+        }
+        $user->role_id = trim($request->role_id);
+        $user->save();
+
+        return redirect('panel/user')->with('success', 'User Successfully updated');
     }
 
     /**
@@ -59,6 +87,15 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $currentUser = auth()->user();
+
+        if ($currentUser->id == $id) {
+            return redirect('panel/user')->with('error', 'You cannot delete your own account.');
+        }
+
+        $save = User::getSingle($id);
+        $save->delete();
+
+        return redirect('panel/user')->with('success', 'User Successfully deleted');
     }
 }

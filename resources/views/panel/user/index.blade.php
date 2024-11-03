@@ -29,11 +29,30 @@
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Role</th>
                   <th scope="col">Date</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>
+                @foreach ($getRecord as $value)
+                <tr>
+                    <th scope="row">{{ $value->id }}</th>
+                    <td>{{ $value->name }}</td>
+                    <td>{{ $value->email }}</td>
+                    <td>{{ $value->role_name }}</td>
+                    <td>{{ $value->created_at }}</td>
+                    <td>
+                        <a href="{{ route('panel.user.edit', $value->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ route('panel.user.destroy', $value->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this role?')">Delete</button>
+                        </form>
+                    </td>
+                  </tr>
+                @endforeach
               </tbody>
             </table>
             <!-- End Table with stripped rows -->
