@@ -19,7 +19,9 @@
                     <h5 class="card-title">Role List</h5>
                 </div>
                 <div class="col-md-6" style="text-align: right">
-                    <a href="{{ url('panel/role/create') }}" class="btn btn-primary" style="margin-top: 10px">Add</a>
+                    @if (!empty($PermissionAdd))
+                        <a href="{{ url('panel/role/create') }}" class="btn btn-primary" style="margin-top: 10px">Add</a>
+                    @endif
                 </div>
             </div>
 
@@ -30,7 +32,9 @@
                   <th scope="col">#</th>
                   <th scope="col">Name</th>
                   <th scope="col">Date</th>
+                  @if (!empty($PermissionEdit) || !empty($PermissionDelete))
                   <th scope="col">Action</th>
+                  @endif
                 </tr>
               </thead>
               <tbody>
@@ -40,11 +44,15 @@
                     <td>{{ $value->name }}</td>
                     <td>{{ $value->created_at }}</td>
                     <td>
+                        @if (!empty($PermissionEdit))
                         <a href="{{ route('panel.role.edit', $value->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                        @endif
                         <form action="{{ route('panel.role.destroy', $value->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
+                            @if (!empty($PermissionDelete))
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this role?')">Delete</button>
+                            @endif
                         </form>
                     </td>
                   </tr>

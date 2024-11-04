@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\Permission;
 use App\Models\PermissionRole;
 use Illuminate\Http\Request;
+use Auth;
 
 class RoleController extends Controller
 {
@@ -14,6 +15,16 @@ class RoleController extends Controller
      */
     public function index()
     {
+        $PermissionRole = PermissionRole::getPermission('role', Auth::user()->role_id);
+
+        if(empty($PermissionRole)){
+            abort(403);
+        }
+
+        $data['PermissionAdd'] = PermissionRole::getPermission('add-role', Auth::user()->role_id);
+        $data['PermissionEdit'] = PermissionRole::getPermission('edit-role', Auth::user()->role_id);
+        $data['PermissionDelete'] = PermissionRole::getPermission('delete-role', Auth::user()->role_id);
+
         $data['getRecord'] = Role::getRecord();
         return view('panel.role.index', $data);
     }
@@ -23,6 +34,12 @@ class RoleController extends Controller
      */
     public function create()
     {
+        $PermissionRole = PermissionRole::getPermission('add-role', Auth::user()->role_id);
+
+        if(empty($PermissionRole)){
+            abort(403);
+        }
+
         $getPermission = Permission::getRecord();
         $data['getPermission'] =$getPermission;
         return view('panel.role.create', $data);
@@ -55,6 +72,12 @@ class RoleController extends Controller
      */
     public function edit(string $id)
     {
+        $PermissionRole = PermissionRole::getPermission('edit-role', Auth::user()->role_id);
+
+        if(empty($PermissionRole)){
+            abort(403);
+        }
+
         $data['getRecord'] = Role::getSingle($id);
         $data['getPermission'] = Permission::getRecord();
         $data['getRolePermission'] = PermissionRole::getRolePermission($id);
